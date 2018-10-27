@@ -38,12 +38,12 @@ EELAYER END
 $Descr User 47992 48000
 encoding utf-8
 Sheet 1 1
-Title "OPC-6 Schematic"
-Date ""
+Title "OPC-6"
+Date "2018-10-26"
 Rev ""
 Comp ""
-Comment1 ""
-Comment2 ""
+Comment1 "https://revaldinho.github.io/opc/"
+Comment2 "A schematic for v6 of the One Page CPU project"
 Comment3 ""
 Comment4 ""
 $EndDescr
@@ -25799,4 +25799,6 @@ Wire Notes Line
 	32300 19000 32300 16300
 Wire Notes Line
 	32300 16300 42200 16300
+Text Notes 25650 31100 0    60   ~ 0
+old value
 $EndSCHEMATC

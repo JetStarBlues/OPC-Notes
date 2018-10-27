@@ -38,12 +38,12 @@ EELAYER END
 $Descr User 47992 48000
 encoding utf-8
 Sheet 1 1
-Title "OPC-6 Schematic"
-Date ""
+Title "OPC-6"
+Date "2018-10-26"
 Rev ""
 Comp ""
-Comment1 ""
-Comment2 ""
+Comment1 "https://revaldinho.github.io/opc/"
+Comment2 "A schematic for v6 of the One Page CPU project"
 Comment3 ""
 Comment4 ""
 $EndDescr
@@ -169,23 +169,23 @@ $EndComp
 $Comp
 L GND #PWR?
 U 1 1 5BC80700
-P 850 1300
-F 0 "#PWR?" H 850 1050 50  0001 C CNN
-F 1 "GND" H 850 1150 50  0000 C CNN
-F 2 "" H 850 1300 50  0001 C CNN
-F 3 "" H 850 1300 50  0001 C CNN
-	1    850  1300
+P 1300 850
+F 0 "#PWR?" H 1300 600 50  0001 C CNN
+F 1 "GND" H 1300 700 50  0000 C CNN
+F 2 "" H 1300 850 50  0001 C CNN
+F 3 "" H 1300 850 50  0001 C CNN
+	1    1300 850 
 	1    0    0    -1  
 $EndComp
 $Comp
 L PWR_FLAG #FLG?
 U 1 1 5BC80724
-P 850 1300
-F 0 "#FLG?" H 850 1375 50  0001 C CNN
-F 1 "PWR_FLAG" H 850 1450 50  0000 C CNN
-F 2 "" H 850 1300 50  0001 C CNN
-F 3 "" H 850 1300 50  0001 C CNN
-	1    850  1300
+P 1300 850
+F 0 "#FLG?" H 1300 925 50  0001 C CNN
+F 1 "PWR_FLAG" H 1300 1000 50  0000 C CNN
+F 2 "" H 1300 850 50  0001 C CNN
+F 3 "" H 1300 850 50  0001 C CNN
+	1    1300 850 
 	1    0    0    -1  
 $EndComp
 $Comp
