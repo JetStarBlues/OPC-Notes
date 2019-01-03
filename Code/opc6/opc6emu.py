@@ -72,16 +72,16 @@ def main ():
 		wordmem = [ ( int( x, 16 ) & 0xFFFF ) for x in f.read().split() ]
 
 		# initialise machine state inc PC = reg[15]
-		regfile   = [ 0 ] * 16,
-		acc       = 0,
-		c         = 0,
-		z         = 0,
-		pcreg     = 15,
-		c_save    = 0,
-		s         = 0,
-		ei        = 0,
-		swiid     = 0,
-		interrupt = 0,
+		regfile   = [ 0 ] * 16
+		acc       = 0
+		c         = 0
+		z         = 0
+		pcreg     = 15
+		c_save    = 0
+		s         = 0
+		ei        = 0
+		swiid     = 0
+		interrupt = 0
 		iomem     = [ 0 ] * 65536
 
 		print ( "PC   : Mem       : Instruction            : SWI I S C Z : {}\n{}".format(
@@ -103,10 +103,13 @@ def main ():
 		p1 = ( instr_word & 0x4000 ) >> 14
 		p2 = ( instr_word & 0x2000 ) >> 13
 
-		opcode = ( ( instr_word & 0xF00 ) >> 8 ) |
-		         ( 0x10 if ( p0, p1, p2 ) == ( 0, 0, 1 ) else
-		           0x00
-		         )
+		opcode = (
+			( ( instr_word & 0xF00 ) >> 8 )
+			|
+			( 0x10 if ( p0, p1, p2 ) == ( 0, 0, 1 ) else
+			 0x00
+			)
+		)
 		source = ( instr_word & 0xF0 ) >> 4
 		dest   = instr_word & 0xF
 
@@ -126,8 +129,10 @@ def main ():
 
 			else:
 
-				operand = ( opcode == op[ "pop" ] ) -
-					      ( opcode == op[ "push" ] )
+				operand = (
+					( opcode == op[ "pop" ] ) -
+					( opcode == op[ "push" ] )
+				)
 
 		instr_str = "{}{} r{},".format(
 
@@ -235,7 +240,7 @@ def main ():
 
 				elif opcode in ( op[ "and" ], op[ "or" ], op[ "xor" ] ):
 
-					if opcode == op[ "and" ]
+					if opcode == op[ "and" ]:
 
 						regfile[ dest ] = regfile[ dest ] & ea_ed
 
@@ -253,25 +258,27 @@ def main ():
 
 					c = ea_ed & 0x1
 
-				    if opcode == op[ "ror" ]:
+					if opcode == op[ "ror" ]:
 
-				    	regfile[ dest ] = ( c << 15 )
+						regfile[ dest ] = ( c << 15 )
 
-			        if opcode == op[ "asr" ]:
+					if opcode == op[ "asr" ]:
 
-			        	regfile[ dest ] = ea_ed & 0x8000
+						regfile[ dest ] = ea_ed & 0x8000
 
-			        else:
+					else:
 
-			        	regfile[ dest ] = 0
+						regfile[ dest ] = 0
 
 					regfile[ dest ] |= ( ea_ed & 0xFFFF ) >> 1
 
 				elif opcode in ( op[ "add" ], op[ "adc" ], op[ "inc" ] ):
 
-					res = regfile[ dest ] +
-					      ea_ed           +
-					      ( c if opcode == op[ "adc" ] else 0 )
+					res = (
+						regfile[ dest ] +
+						ea_ed           +
+						( c if opcode == op[ "adc" ] else 0 )
+					)
 					res &= 0x1FFFF
 
 					c = ( res >> 16 ) & 1
@@ -289,7 +296,7 @@ def main ():
 
 						regfile[ dest ] = ~ ea_ed
 
-					else
+					else:
 
 						regfile[ dest ] = ea_ed
 
@@ -301,9 +308,11 @@ def main ():
 
 				elif opcode in (op[ "sub" ], op[ "sbc" ], op[ "cmp" ], op[ "cmpc" ], op[ "dec" ] ) :
 
-					res = regfile[ dest ]          +
-					      ( ( ~ ea_ed ) & 0xFFFF ) +
-					      ( c if ( opcode in ( op[ "cmpc" ], op[ "sbc" ] ) ) else 1 )
+					res = (
+						regfile[ dest ]          +
+						( ( ~ ea_ed ) & 0xFFFF ) +
+						( c if ( opcode in ( op[ "cmpc" ], op[ "sbc" ] ) ) else 1 )
+					)
 					res &= 0x1FFFF
 
 					# retarget r0 with result of comparison
@@ -384,7 +393,7 @@ def main ():
 
 				( swiid, ei, s, c, z ) = flag_save
 
-			else
+			else:
 
 				s = ( regfile[ dest ] >> 15 ) & 1
 				z = int( regfile[ dest ] == 0 )
@@ -396,3 +405,8 @@ def main ():
 		with open( sys.argv[ 2 ], "w" ) as f:
 
 			f.write( '\n'.join( [ ''.join( "%04x " % d for d in wordmem[ j : j + 16 ] ) for j in [ i for i in range( 0, len( wordmem ), 16 ) ] ] ) )
+
+
+if __name__ == "__main__":
+
+	main()

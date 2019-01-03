@@ -20,7 +20,7 @@ INT:
         mov     r12,r0,SWI_LOG  # default to SI_LOG
         getpsr  r13,psr         # get PSR into r13
         and     r13,r0,0xF0     # mask off SWI bits
-        z.mov   r12,r0,HWI_LOG  # if nonzero then point at HI_LOG instead
+        z.mov   r12,r0,HWI_LOG  # if zero then point at HI_LOG instead
         ld      r13,r12         # get count
         add     r13,r0,1        # increment count
         sto     r13,r12         # write back
@@ -58,7 +58,7 @@ fibLoop:
 
 fibEnd:
         # cause a SWI
-        putpsr  psr, r0, 0x18  # set PSR bits        SWI_0, EI. Zero others  # EI is active low so disabling interrupts
+        putpsr  psr, r0, 0x18  # set PSR bits        SWI_0, EI. Zero others
         putpsr  psr, r0, 0x28  # set PSR bits SWI_1,        EI. Zero others
         putpsr  psr, r0, 0x38  # set PSR bits SWI_1, SWI_0, EI. Zero others
         halt    r0, r0, 0x999
