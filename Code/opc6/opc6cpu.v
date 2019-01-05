@@ -55,8 +55,8 @@
 	19   10011     getpsr                                       rd                 <- ED                getpsr  rd, psr   ED = psr + 0         getpsr  rd, psr, imm   ED = psr + imm
 	20   10100     rti        return from interrupt             rd                 <- EA                rti     pc, pc    EA = shadow PC
 	21   10101     not                                          rd                 <- ~ED               not     rd, rs    ED = rs + 0          not     rd,  rs, imm   ED = rs + imm
-	22   10110     out        IO output                         IO[EA]             <- rd                out     rd, rs    ED = rs + 0          out     rd,  rs, imm   ED = rs + imm
-	23   10111     in         IO input                          rd                 <- IO[EA]            in      rd, rs    ED = rs + 0          in      rd,  rs, imm   ED = rs + imm
+	22   10110     out        IO output                         IO[EA]             <- rd                out     rd, rs    EA = rs + 0          out     rd,  rs, imm   EA = rs + imm
+	23   10111     in         IO input                          rd                 <- IO[EA]            in      rd, rs    EA = rs + 0          in      rd,  rs, imm   EA = rs + imm
 	24   11000     push       memory store with pre-indexing    mem[EA]            <- rd;
                                                                 rs                 <- EA                push    rd, rs    EA = rs - 1          push    rd,  rs, imm   EA = rs + imm
 	25   11001     pop        memory read with post-indexing    rd                 <- mem[rs];
