@@ -36,7 +36,9 @@ MACRO   RTS ()
         mov     pc,r13
 ENDMACRO
 MACRO   PUSHALL()
-        push     r13, r14
+                           # JK, r14 acts like SP
+        push     r13, r14  # EA = r14 - 1; mem[ EA ] = r13; r14 = EA
+                           # decrement SP; push value
         push     r12, r14
         push     r11, r14
         push     r10, r14
@@ -48,7 +50,8 @@ MACRO   PUSHALL()
 ENDMACRO
 
 MACRO   POPALL()
-        pop     r5, r14
+        pop     r5, r14  # EA = r14 + 1; r5 = mem[ EA ]; r14 = EA
+                         # increment SP; pop value
         pop     r6, r14
         pop     r7, r14
         pop     r8, r14
@@ -59,7 +62,7 @@ MACRO   POPALL()
         pop    r13, r14
 ENDMACRO
 
-        mov   r14,r0,0x0FFE
+        mov   r14,r0,0x0FFE  # JK, location of stack
         # Initialise registers to stop PUSHALL/POPALL ever loading X's to stack for regression runs
         mov   r13,r0
         mov   r12,r0

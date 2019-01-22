@@ -1,6 +1,7 @@
 MACRO PUSH( _r_ )
+            # equivalent to 'push _r_, r14' sort of...
             mov     r14, r14, -1
-            sto     _r_, r14, 1
+            sto     _r_, r14, 1  # why the +1?
 ENDMACRO
 
 MACRO POP( _r_ )

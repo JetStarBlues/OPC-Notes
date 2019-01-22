@@ -1,12 +1,12 @@
-import sys, re, codecs
+import sys
+import re
+import getopt
+import codecs
 
-'''
-ppp l oooo ssss dddd  nnnnnnnnnnnnnnnn
-  \  \   \    \   \           \_______ 16b optional operand word
-   \  \   \    \___\__________________  4b source and destination registers
-    \  \___\__________________________  1b instruction length + 4b opcode
-     \________________________________  3b predicate bits
-'''
+errors   = []
+warnings = []
+nextmnum = 0
+nextbyte = 0
 
 op = [
 
@@ -76,19 +76,33 @@ predicateDict = {
 	'pl' : 0xE000,  # 111............. execute if sign flag is clear
 }
 
-wordmem   = [ 0x0000 ] * 64 * 1024
-macro     = dict()
-macroname = None
-newtext   = []
-wcount    = 0
-errors    = []
-warnings  = []
-reg_re    = re.compile( '(r\d*|psr|pc)' )
-mnum      = 0
-nextmnum  = 0
+def usage ():
 
+	print ( __doc__ )
+	sys.exit( 1 )
 
-# recursively expand macros, passing on instances not (yet) defined
+def check_alignment( inst, error = True ):
+
+	global nextbyte
+	global errors
+
+	if nextbyte % 2 == 1:
+
+		if error:
+
+			errors.append( "Error: found {} directive or instruction on unaligned byte ...\n        {}".format(
+
+				inst,
+				line.lstrip()
+			))
+
+			return False
+
+		else:
+
+			return True
+
+# Recursively expand macros, passing on instances not (yet) defined
 def expand_macro( line, macro, mnum ):
 
 	global nextmnum
@@ -152,19 +166,32 @@ def expand_macro( line, macro, mnum ):
 
 	return text
 
-def assemble( _inputFile ):
+def assemble( filename, listingon = True ):
+
+	global errors, warnings, nextmnum, nextbyte
+
+	wordmem   = [ 0x00 ] * 128 * 1024
+	macro     = dict()
+	macroname = None
+	newtext   = []
+	bcount    = 0
+	reg_re    = re.compile( '(r\d*|psr|pc)' )
+	mnum      = 0
 
 	# Pass 0 - macro expansion
-	for line in open( _inputFile, "r" ).readlines():
+	for line in open( filename, 'r' ).readlines():
 
-		mobj =  re.match( "\s*?MACRO\s*(?P<name>\w*)\s*?\((?P<params>.*)\)", line, re.IGNORECASE )
+		mobj_re = '''\s*?MACRO\s*(?P<name>\w*)\s*?\((?P<params>.*)\)'''
+		mobj_re = re.compile( mobj_re, re.X )
+
+		mobj =  re.match( mobj_re, line, re.IGNORECASE )
 
 		if mobj:
 
 			macroname          = mobj.groupdict()[ "name" ]
 			macro[ macroname ] = (
 
-				[ x.strip() for x in ( mobj.groupdict()[ "params" ] ).split ("," ) ],
+				[ x.strip() for x in ( mobj.groupdict()[ "params" ] ).split ( "," ) ],
 				[]
 			)
 
@@ -182,8 +209,8 @@ def assemble( _inputFile ):
 	# Two pass assembly
 	for iteration in range ( 0, 2 ):
 
-		wcount  = 0
-		nextmem = 0
+		bcount  = 0
+		nextbyte = 0
 
 		for line in newtext:
 
@@ -220,7 +247,7 @@ def assemble( _inputFile ):
 			pred     = "1" if pred == None else pred
 			opfields = [ x.strip() for x in operands.split( "," ) ]
 			words    = []
-			memptr   = nextmem
+			byts     = []
 
 			if ( iteration == 0 and
 			     ( label and label != "None" ) or
@@ -252,6 +279,8 @@ def assemble( _inputFile ):
 			if ( inst in ( "WORD", "BYTE" ) or
 			     inst in op
 			   ) and iteration < 1:
+
+			...
 
 				# If two operands are provide instuction will be one word  ??
 				if inst == "WORD":
@@ -405,40 +434,3 @@ def assemble( _inputFile ):
 	) )
 
 	return wordmem
-
-def genOutputFile( wordmem, _outputFile ):
-
-	# Write to hex file only if no errors else send result to null file
-	if len( errors ) > 0:
-
-		outputFile = "/dev/null"
-
-	else:
-
-		outputFile = _outputFile
-
-	with open( outputFile, "w" ) as f:   
-
-		f.write(
-
-			'\n'.join(
-
-				[
-					''.join(
-
-						"%04x " % d for d in wordmem[ j : j + 24 ]
-					)
-					for j in [ i for i in range( 0, len( wordmem ), 24 ) ]
-				]
-			)
-		)
-
-
-if __name__ == "__main__":
-
-	inputFile  = sys.argv[ 1 ]
-	outputFile = sys.argv[ 2 ]
-
-	genOutputFile( assemble( inputFile ), outputFile )
-
-	sys.exit( len( errors ) > 0 )
