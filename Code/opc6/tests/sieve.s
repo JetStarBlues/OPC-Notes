@@ -70,18 +70,25 @@ L0:     sto   r0,r1,results
        
         # Now start the sieve at value 3
         mov   r12,r0,3
+
 L1:     lsr   r8,r12
         ld    r1,r8,results     # Is marker set ?
         nz.inc pc,L3-PC         # If yes then next bit else...
+
         mov   r1, r12           # Copy number into r1
         jsr   r13,r0,PrintDec   # Print it
+
         mov   r11,r12           # p2 <- 2*ptr
         add   r11,r11
+
 L2:     lsr   r2,r11            # shift right into r2 to inspect LSB in carry 
+
         c.sto r11,r2,results    # Set bits in the marker if odd (just use the actual number - easy to see non-primes in the dump)
+
         add   r11,r12           # Next bit = p2 <- p2 + ptr
         cmp   r11,r10           # Reached the end ?
         nc.dec pc,PC-L2         # Next bit if < MAX        
+
 L3:     inc   r12,2             # next odd
         cmp   r12,r10  
         nc.mov pc,r0,L1
@@ -144,7 +151,7 @@ DecTable:
 results: 
         WORD    0       # Results will go here
 
-        ORG 0xFFEE
+ORG 0xFFEE
         # --------------------------------------------------------------
         #
         # oswrch
